@@ -1,6 +1,7 @@
 # Motosiklet Seçim Köməkçisi (motopicker)
 
-[![CI](https://github.com/ISTIFADECI/moto-picker/actions/workflows/ci.yml/badge.svg)](https://github.com/ISTIFADECI/moto-picker/actions)
+https://moto-picker-uvqurvfr3w68vnjwdxq7n9.streamlit.app/
+
 
 İstifadəçi profilinə (büdcə, istifadə məqsədi, təcrübə, boy, vəsiqə kateqoriyası) görə
 `data/motorcycles.csv`-dəki 20 modeldən ən uyğun motosikletləri **izahatla** tövsiyə edən
