@@ -1,0 +1,28 @@
+brand,model,price_usd,power_kw,weight_kg,seat_height_mm,fuel_l_per_100km,category,license_class
+Honda,CB125R,4500,11.0,130,816,2.1,city,A1
+Yamaha,MT-03,5500,31.0,168,780,3.6,city,A2
+KTM,390 Duke,5700,33.0,168,830,3.5,city,A2
+Yamaha,MT-07,8000,54.0,184,805,4.5,city,A
+Kawasaki,Z650,8000,50.0,188,790,4.3,city,A
+Triumph,Trident 660,8600,59.0,189,805,4.5,city,A
+Suzuki,V-Strom 250,5400,18.5,164,800,3.4,touring,A2
+Honda,NC750X,9500,43.0,214,830,3.3,touring,A
+Suzuki,V-Strom 650,9500,52.0,213,835,4.8,touring,A
+Yamaha,Tracer 9 GT,14500,87.0,223,850,5.6,touring,A
+BMW,R 1250 GS,19000,100.0,249,850,5.5,touring,A
+Royal Enfield,Himalayan 450,5800,29.0,196,825,3.5,offroad,A2
+BMW,G 310 GS,5800,25.0,170,835,3.3,offroad,A2
+Honda,CRF300L,5400,20.0,142,880,3.2,offroad,A2
+Kawasaki,KLX230,5000,14.0,134,880,2.7,offroad,A2
+Honda,Africa Twin CRF1100L,15500,75.0,226,850,5.5,offroad,A
+Kawasaki,Ninja 400,5300,33.0,167,785,4.2,sport,A2
+Yamaha,YZF-R3,5600,31.0,169,780,3.8,sport,A2
+Kawasaki,Ninja ZX-6R,11500,92.0,197,830,5.8,sport,A
+Ducati,Panigale V2,18500,115.0,200,840,6.0,sport,A
+Yamaha,MT-125,5200,11.0,140,810,2.1,city,A1
+KTM,125 Duke,5500,11.0,150,830,2.4,city,A1
+Kawasaki,Z125,3800,9.0,146,815,1.9,city,A1
+Suzuki,GSX-S125,4600,9.6,133,785,2.0,city,A1
+Yamaha,YZF-R125,5400,11.0,140,820,2.2,sport,A1
+Honda,CBR125R,4800,10.7,138,800,2.0,sport,A1
+Yamaha,WR125R,5700,11.0,134,875,2.4,offroad,A1

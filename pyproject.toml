@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "motopicker"
+version = "1.0.0"
+description = "Motosiklet Seçim Köməkçisi: profilə görə motosiklet tövsiyə edir"
+requires-python = ">=3.11"
+readme = "README.md"
+
+[project.scripts]
+motopicker = "motopicker.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "tests"]
+addopts = "--cov=motopicker --cov-report=term-missing --cov-fail-under=90"
+
+[tool.coverage.run]
+branch = true
