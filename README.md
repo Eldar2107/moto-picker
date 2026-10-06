@@ -1,11 +1,13 @@
 # Motosiklet Seçim Köməkçisi (motopicker)
 
-https://moto-picker-uvqurvfr3w68vnjwdxq7n9.streamlit.app/
+[![CI](https://github.com/Eldar2107/moto-picker/actions/workflows/ci.yml/badge.svg)](https://github.com/Eldar2107/moto-picker/actions)
 
+**Canlı demo:** https://moto-picker-uvqurvfr3w68vnjwdxq7n9.streamlit.app/
 
 İstifadəçi profilinə (büdcə, istifadə məqsədi, təcrübə, boy, vəsiqə kateqoriyası) görə
-`data/motorcycles.csv`-dəki 20 modeldən ən uyğun motosikletləri **izahatla** tövsiyə edən
+`data/motorcycles.csv`-dəki 27 modeldən ən uyğun motosikletləri **izahatla** tövsiyə edən
 kiçik Python layihəsi. Çoxkriteriyalı qərar qəbuletmə (weighted scoring) əsasında işləyir.
+Həm komanda sətri (CLI), həm də Streamlit veb interfeysi var.
 
 > **Qeyd:** `data/motorcycles.csv`-dəki qiymət və texniki göstəricilər təxminidir (tədris məqsədi üçün)
 > və rəsmi istehsalçı məlumatı ilə dəqiqləşdirilməlidir.
@@ -15,7 +17,7 @@ kiçik Python layihəsi. Çoxkriteriyalı qərar qəbuletmə (weighted scoring) 
 Python 3.11+ lazımdır.
 
 ```bash
-git clone https://github.com/ISTIFADECI/moto-picker.git
+git clone https://github.com/Eldar2107/moto-picker.git
 cd moto-picker
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
@@ -23,7 +25,19 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-## İstifadə
+## Veb interfeys (Streamlit)
+
+```bash
+pip install -r requirements-app.txt
+streamlit run app.py
+```
+
+Sol paneldə profil (büdcə, məqsəd, təcrübə, boy, vəsiqə), istəyə görə brend/model axtarışı və nəticə sayı
+daxil edilir. Nəticələr kartlarda xal, qiymət, texniki göstəricilər, "niyə bu model?" izahatı və
+şəkillərlə göstərilir. Şəkillər Wikimedia Commons-dan avtomatik tapılır; tapılmayanda placeholder
+göstərilir. Interfeys yalnız UI qatıdır, bütün məntiq `motopicker` paketindədir.
+
+## Komanda sətri ilə istifadə
 
 ```bash
 python -m motopicker --budget 9000 --purpose city --experience beginner --height 175 --license A2 --top 3
@@ -42,9 +56,11 @@ python -m motopicker --budget 9000 --purpose city --experience beginner --height
 Nümunə çıxış:
 
 ```
-1. Honda CB125R  |  92.3 xal  |  $4,500  |  11 kW
-   Ümumi xal 92.3/100. Kateqoriyası (city) seçdiyiniz məqsədə uyğundur. Ən güclü cəhətləri: aşağı çəki, sərfəli qiymət. Qiyməti büdcədən 4,500 USD aşağıdır. Oturacaq hündürlüyü (816 mm) boyunuz üçün maksimum 910 mm həddindən aşağıdır.
-2. Yamaha MT-03  |  57.6 xal  |  $5,500  |  31 kW
+1. Suzuki GSX-S125  |  88.6 xal  |  $4,600  |  9.6 kW
+   Ümumi xal 88.6/100. Kateqoriyası (city) seçdiyiniz məqsədə uyğundur. Ən güclü cəhətləri: aşağı çəki, aşağı yanacaq sərfi. Qiyməti büdcədən 4,400 USD aşağıdır. Oturacaq hündürlüyü (785 mm) boyunuz üçün maksimum 910 mm həddindən aşağıdır.
+2. Kawasaki Z125  |  85.9 xal  |  $3,800  |  9 kW
+   ...
+3. Honda CB125R  |  84.6 xal  |  $4,500  |  11 kW
    ...
 ```
 
@@ -54,13 +70,13 @@ Nümunə çıxış:
 
 Tövsiyə üç mərhələdə hesablanır (`recommender.py`):
 
-**1. Sərt filtrlər (`filters.py`)** — keçməyən motosiklet heç xallandırılmır:
+**1. Sərt filtrlər (`filters.py`)**: keçməyən motosiklet heç xallandırılmır:
 - **Büdcə:** `price_usd <= budget`
 - **Vəsiqə:** motosikletin tələb etdiyi kateqoriya sürücünün kateqoriyasından yuxarı olmamalıdır;
   güc limiti: **A1 ≤ 11 kW**, **A2 ≤ 35 kW**, **A** limitsiz
 - **Boy:** `seat_height_mm <= boy_sm * 10 * 0.52`
 
-**2. Normallaşdırma (`scoring.py`)** — hər ədədi meyar (qiymət, güc, çəki, oturacaq hündürlüyü,
+**2. Normallaşdırma (`scoring.py`)**: hər ədədi meyar (qiymət, güc, çəki, oturacaq hündürlüyü,
 yanacaq sərfi) *namizədlər arasında* min-max ilə [0, 1]-ə gətirilir:
 
 ```
@@ -70,7 +86,7 @@ normalized = 1 - (value - min) / (max - min)    # kiçik yaxşıdırsa (qiymət,
 Bütün namizədlərin dəyəri eynidirsə normallaşdırılmış dəyər 1.0 olur. Kateqoriya meyarı 1 (məqsədə
 uyğun) və ya 0-dır.
 
-**3. Çəkili xal** — `xal = 100 * Σ (çəki_i * normalized_i)`. Çəkilər istifadə məqsədinə görə
+**3. Çəkili xal**: `xal = 100 * Σ (çəki_i * normalized_i)`. Çəkilər istifadə məqsədinə görə
 `constants.py`-dəki `BASE_WEIGHTS` cədvəlindən götürülür (məsələn, sport üçün güc çəkisi 0.35,
 city üçün 0.05). Sonra təcrübəyə görə vuruqlar tətbiq olunur (məsələn, beginner üçün güc çəkisi ×0.3,
 çəki ×1.5) və çəkilər yenidən cəmi 1 olacaq şəkildə normallaşdırılır.
@@ -92,8 +108,11 @@ src/motopicker/
   scoring.py      min-max normallaşdırma + çəkili xal
   recommender.py  tövsiyə + izahat
   cli.py          argparse interfeysi
+app.py            Streamlit veb interfeysi (axtarış + şəkillər)
 data/motorcycles.csv
 tests/            pytest testləri
+requirements.txt        test asılılıqları
+requirements-app.txt    veb interfeys asılılıqları
 ```
 
 ## Testlər
@@ -102,14 +121,18 @@ tests/            pytest testləri
 pytest
 ```
 
-130 test, **100% coverage** (minimum tələb 90%, `pyproject.toml`-da `--cov-fail-under=90`).
-Əhatə olunan hallar: sərhəd dəyərləri (büdcə, 11/35 kW, oturacaq hündürlüyü), səhv CSV
-(çatışmayan sütun, yanlış tip, mənfi dəyər, boş fayl), boş nəticə, bərabər xallar, CLI xəta halları.
+Hər modul üçün unit testlər yazılıb; minimum coverage tələbi **90%**-dir
+(`pyproject.toml`-da `--cov-fail-under=90`). Əhatə olunan hallar: sərhəd dəyərləri (büdcə, 11/35 kW,
+oturacaq hündürlüyü), səhv CSV (çatışmayan sütun, yanlış tip, mənfi dəyər, boş fayl), boş nəticə,
+bərabər xallar, hər vəsiqə kateqoriyası üçün bir neçə markanın olması, CLI xəta halları.
 GitHub Actions hər push-da testləri avtomatik işə salır (`.github/workflows/ci.yml`).
+`app.py` (UI qatı) test coverage-ə daxil deyil.
 
 ## Məhdudiyyətlər
 
-- Data kiçikdir (20 model) və təxminidir.
+- Data kiçikdir (27 model) və təxminidir.
 - Boy → oturacaq hündürlüyü qaydası sadələşdirilmiş nisbətdir (0.52); real ayaqla yerə çatma
   səviyyəsi bədən nisbətlərindən asılıdır.
 - Çəkilər ekspert qərarıdır, statistik olaraq öyrənilməyib.
+- Şəkillər model adına görə avtomatik axtarılır, ona görə nadir modellərdə yanlış və ya çatışmayan
+  şəkil ola bilər (Wikimedia Commons, müxtəlif lisenziyalar).
